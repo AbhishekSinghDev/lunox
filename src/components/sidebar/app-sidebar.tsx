@@ -17,6 +17,7 @@ import {
 import { SIDEBAR } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
+import ThemeToggle from "../shared/theme-toggle";
 import { NavThreadHistory } from "./nav-thread-history";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -26,20 +27,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="#">
-                <div className="text-sidebar-primary-foreground relative flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Image
-                    src="/static/logo/lunox.png"
-                    alt="Lunox"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Lunox</span>
-                  <span className="truncate text-xs">Lunox.ai</span>
-                </div>
-              </Link>
+              <div className="flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2">
+                  <div className="text-sidebar-primary-foreground relative flex aspect-square size-8 items-center justify-center rounded-lg">
+                    <Image
+                      src="/static/logo/lunox.png"
+                      alt="Lunox"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">Lunox</span>
+                    <span className="truncate text-xs">Lunox.ai</span>
+                  </div>
+                </Link>
+
+                <ThemeToggle />
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
