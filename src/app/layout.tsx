@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { type Metadata } from "next";
 import { Outfit } from "next/font/google";
 
-import { TRPCReactProvider } from "@/trpc/react";
+import Providers from "@/providers/providers";
 
 export const metadata: Metadata = {
   title: "Lunox",
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.className}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
