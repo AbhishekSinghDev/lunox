@@ -21,7 +21,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${outfit.className}`}>
+    <html lang="en" className={`${outfit.className}`} suppressHydrationWarning>
       <body>
         <Providers>{children}</Providers>
       </body>
