@@ -1,9 +1,8 @@
+import AuthenticatedProvidersWrapper from "@/providers/authenticated-providers-wrapper";
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Outfit } from "next/font/google";
-
-import Providers from "@/providers/providers";
 
 export const metadata: Metadata = {
   title: "Lunox",
@@ -23,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.className}`} suppressHydrationWarning>
       <body>
-        <Providers>{children}</Providers>
+        <AuthenticatedProvidersWrapper>
+          {children}
+        </AuthenticatedProvidersWrapper>
       </body>
     </html>
   );

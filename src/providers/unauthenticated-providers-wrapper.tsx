@@ -1,8 +1,11 @@
 import { TRPCReactProvider } from "@/trpc/react";
-import SidebarWrapper from "./sidebar-wrapper";
 import ThemeProvider from "./theme-provider";
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
+const UnAuthenticatedProvidersWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   return (
     <TRPCReactProvider>
       <ThemeProvider
@@ -11,10 +14,10 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         enableSystem
         disableTransitionOnChange
       >
-        <SidebarWrapper>{children}</SidebarWrapper>
+        {children}
       </ThemeProvider>
     </TRPCReactProvider>
   );
 };
 
-export default Providers;
+export default UnAuthenticatedProvidersWrapper;
