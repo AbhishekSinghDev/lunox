@@ -2,6 +2,8 @@ import { TRPCReactProvider } from "@/trpc/react";
 import SidebarWrapper from "./sidebar-wrapper";
 import ThemeProvider from "./theme-provider";
 
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 const AuthenticatedProvidersWrapper = ({
   children,
 }: {
@@ -9,14 +11,16 @@ const AuthenticatedProvidersWrapper = ({
 }) => {
   return (
     <TRPCReactProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <SidebarWrapper>{children}</SidebarWrapper>
-      </ThemeProvider>
+      <NuqsAdapter>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarWrapper>{children}</SidebarWrapper>
+        </ThemeProvider>
+      </NuqsAdapter>
     </TRPCReactProvider>
   );
 };
