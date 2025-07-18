@@ -54,6 +54,7 @@ const ForgotPasswordForm = () => {
       // Optionally redirect to sign-in page
       // router.push("/sign-in");
     } catch (error) {
+      console.error("Error sending reset email:", error);
       toast.error("Failed to send reset email. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -66,8 +67,8 @@ const ForgotPasswordForm = () => {
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Forgot Password</CardTitle>
           <CardDescription>
-            Enter your email address and we'll send you a link to reset your
-            password
+            Enter your email address and we&apos;ll send you a link to reset
+            your password
           </CardDescription>
         </CardHeader>
         <CardContent>
