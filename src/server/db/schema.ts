@@ -1,4 +1,12 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import {
+  boolean,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -15,6 +23,10 @@ export const user = pgTable("user", {
     .$defaultFn(() => new Date())
     .notNull(),
 });
+
+export const userRelations = relations(user, ({ many }) => ({
+  libraries: many(library),
+}));
 
 export const session = pgTable("session", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -55,3 +67,27 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").$defaultFn(() => new Date()),
   updatedAt: timestamp("updated_at").$defaultFn(() => new Date()),
 });
+
+export const libTypeEnum = pgEnum("lib_type_enum", ["search", "research"]);
+
+export const library = pgTable("library", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  type: libTypeEnum("type").notNull(),
+  content: text("content").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+});
+
+export const libraryRelations = relations(library, ({ one }) => ({
+  user: one(user, {
+    fields: [library.userId],
+    references: [user.id],
+  }),
+}));

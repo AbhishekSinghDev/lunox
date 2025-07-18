@@ -1,10 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Github, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,44 +24,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { SignupSchema } from "@/lib/zod";
 import { authClient } from "@/server/auth/client";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const formSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, "Username must be at least 3 characters")
-      .max(20, "Username must be less than 20 characters")
-      .regex(
-        /^[a-zA-Z0-9_]+$/,
-        "Username can only contain letters, numbers, and underscores",
-      ),
-    email: z
-      .string()
-      .email("Please enter a valid email address")
-      .min(1, "Email is required"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-      ),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
 const SignUpForm = () => {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof SignupSchema>>({
+    resolver: zodResolver(SignupSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -96,7 +72,7 @@ const SignUpForm = () => {
 
   const passwordStrength = getPasswordStrength(password);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SignupSchema>) => {
     setIsSubmitting(true);
     await authClient.signUp.email(
       {
@@ -109,6 +85,7 @@ const SignUpForm = () => {
       {
         onSuccess: () => {
           setIsSubmitting(false);
+          router.push("/");
         },
         onError: (ctx) => {
           setIsSubmitting(false);
@@ -118,14 +95,22 @@ const SignUpForm = () => {
     );
   };
 
+  const handleGoogleSignUp = async () => {
+    // Add your Google OAuth logic here
+    console.log("Google sign-up clicked");
+  };
+
+  const handleGithubSignUp = async () => {
+    // Add your GitHub OAuth logic here
+    console.log("GitHub sign-up clicked");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md border-0 bg-white/80 shadow-xl backdrop-blur-sm">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
-            Create Account
-          </CardTitle>
-          <CardDescription className="text-gray-600">
+          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+          <CardDescription>
             Enter your details to create your account
           </CardDescription>
         </CardHeader>
@@ -137,24 +122,22 @@ const SignUpForm = () => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Username
-                    </FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <User className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
                         <Input
                           placeholder="Enter your username"
                           className={cn(
-                            "h-11 border-gray-200 pl-10 focus:border-blue-500 focus:ring-blue-500",
+                            "pl-10",
                             form.formState.errors.username &&
-                              "border-red-500 focus:border-red-500 focus:ring-red-500",
+                              "border-destructive focus-visible:ring-destructive",
                           )}
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -164,25 +147,23 @@ const SignUpForm = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Email
-                    </FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Mail className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
                         <Input
                           type="email"
                           placeholder="Enter your email"
                           className={cn(
-                            "h-11 border-gray-200 pl-10 focus:border-blue-500 focus:ring-blue-500",
+                            "pl-10",
                             form.formState.errors.email &&
-                              "border-red-500 focus:border-red-500 focus:ring-red-500",
+                              "border-destructive focus-visible:ring-destructive",
                           )}
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -192,26 +173,24 @@ const SignUpForm = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Password
-                    </FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Lock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
                           className={cn(
-                            "h-11 border-gray-200 pr-10 pl-10 focus:border-blue-500 focus:ring-blue-500",
+                            "pr-10 pl-10",
                             form.formState.errors.password &&
-                              "border-red-500 focus:border-red-500 focus:ring-red-500",
+                              "border-destructive focus-visible:ring-destructive",
                           )}
                           {...field}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400 hover:text-gray-600"
+                          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transform"
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -232,7 +211,7 @@ const SignUpForm = () => {
                                   "h-1 w-6 rounded-full transition-colors",
                                   level <= (passwordStrength?.strength ?? 0)
                                     ? passwordStrength?.color
-                                    : "bg-gray-200",
+                                    : "bg-muted",
                                 )}
                               />
                             ))}
@@ -242,7 +221,7 @@ const SignUpForm = () => {
                               "text-xs transition-colors",
                               (passwordStrength?.strength ?? 0) >= 4
                                 ? "text-green-600"
-                                : "text-gray-600",
+                                : "text-muted-foreground",
                             )}
                           >
                             {passwordStrength?.label}
@@ -250,7 +229,7 @@ const SignUpForm = () => {
                         </div>
                       </div>
                     )}
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -260,19 +239,17 @@ const SignUpForm = () => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Confirm Password
-                    </FormLabel>
+                    <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                        <Lock className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
                         <Input
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm your password"
                           className={cn(
-                            "h-11 border-gray-200 pr-10 pl-10 focus:border-blue-500 focus:ring-blue-500",
+                            "pr-10 pl-10",
                             form.formState.errors.confirmPassword &&
-                              "border-red-500 focus:border-red-500 focus:ring-red-500",
+                              "border-destructive focus-visible:ring-destructive",
                           )}
                           {...field}
                         />
@@ -281,7 +258,7 @@ const SignUpForm = () => {
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
-                          className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400 hover:text-gray-600"
+                          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transform"
                         >
                           {showConfirmPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -291,7 +268,7 @@ const SignUpForm = () => {
                         </button>
                       </div>
                     </FormControl>
-                    <FormMessage className="text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -299,15 +276,14 @@ const SignUpForm = () => {
               <Button
                 type="submit"
                 className={cn(
-                  "h-11 w-full transform bg-gradient-to-r from-blue-600 to-purple-600 font-medium text-white transition-all duration-200 hover:scale-[1.02] hover:from-blue-700 hover:to-purple-700",
-                  isSubmitting &&
-                    "transform-none cursor-not-allowed opacity-50",
+                  "w-full",
+                  isSubmitting && "cursor-not-allowed opacity-50",
                 )}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
+                    <div className="border-primary-foreground h-4 w-4 animate-spin rounded-full border-b-2"></div>
                     Creating Account...
                   </div>
                 ) : (
@@ -317,12 +293,63 @@ const SignUpForm = () => {
             </form>
           </Form>
 
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="border-border w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card text-muted-foreground px-2">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleGoogleSignUp}
+                className="w-full"
+              >
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                  <path
+                    fill="currentColor"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                Google
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleGithubSignUp}
+                className="w-full"
+              >
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+            </div>
+          </div>
+
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-muted-foreground text-sm">
               Already have an account?{" "}
               <a
                 href="/sign-in"
-                className="font-medium text-blue-600 transition-colors hover:text-blue-500"
+                className="text-primary font-medium hover:underline"
               >
                 Sign in
               </a>

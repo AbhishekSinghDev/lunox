@@ -3,9 +3,9 @@ export type ChatInputStore = {
   setMessage: (message: string) => void;
 };
 
-export type ChatTab = "search" | "research";
+export type ChatType = "search" | "research";
 
-export type ChatTabStore = {
-  tab: ChatTab;
-  setTab: (tab: ChatTab) => void;
+export type ChatTypeStore = {
+  type: ChatType;
+  setType: (type: ChatType) => void;
 };
