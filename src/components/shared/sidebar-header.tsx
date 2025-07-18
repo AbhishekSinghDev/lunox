@@ -7,6 +7,8 @@ import { SidebarTrigger } from "../ui/sidebar";
 const SidebarHeader = () => {
   const { message } = useInputChat();
 
+  console.log("SidebarHeader message:", message);
+
   return (
     <header className="flex h-16 shrink-0 items-center gap-2">
       <div className="flex items-center gap-2 px-4">
@@ -16,9 +18,7 @@ const SidebarHeader = () => {
           className="mr-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="line-clamp-1">
-          {message?.trim().length === 0
-            ? "Welcome to Lunox.ai"
-            : message?.slice(0, 50)}
+          {message?.slice(0, 50) ?? "Welcome to Lunox.ai"}
         </h1>
       </div>
     </header>
