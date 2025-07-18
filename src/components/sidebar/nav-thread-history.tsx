@@ -2,10 +2,10 @@
 
 import {
   Copy,
+  MessageSquare,
   MoreHorizontal,
   Share,
   Trash2,
-  type LucideIcon,
 } from "lucide-react";
 
 import {
@@ -24,29 +24,30 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { api } from "@/trpc/react";
 import Link from "next/link";
 
-type NavThreadHistoryProps = {
-  threadHistory: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-};
-
-export function NavThreadHistory({ threadHistory }: NavThreadHistoryProps) {
+export function NavThreadHistory() {
   const { isMobile } = useSidebar();
+
+  const [threads] = api.library.getAll.useSuspenseQuery();
+
+  if (!threads || threads.length === 0) {
+    return null;
+  }
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Thread History</SidebarGroupLabel>
       <SidebarMenu>
-        {threadHistory.map((item) => (
-          <SidebarMenuItem key={item.name}>
+        {threads.map((item) => (
+          <SidebarMenuItem key={item.id}>
             <SidebarMenuButton asChild>
-              <Link href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
+              <Link href={`/thread/${item.id}`}>
+                <MessageSquare />
+                <span className="line-clamp-1">
+                  {item.content.slice(0, 50)}
+                </span>
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>

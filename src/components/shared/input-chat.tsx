@@ -13,9 +13,12 @@ const InputChat = () => {
   const { type } = useChatType();
   const [isComposing, setIsComposing] = useState(false);
 
+  const trpcUtils = api.useUtils();
+
   const { mutate: createLibraryEntry, isPending } =
     api.library.create.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
+        await trpcUtils.library.getAll.invalidate();
         setMessage(undefined);
       },
       onError: (opts) => {

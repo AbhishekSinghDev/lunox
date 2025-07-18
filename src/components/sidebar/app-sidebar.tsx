@@ -42,7 +42,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <span className="truncate text-xs">Lunox.ai</span>
                   </div>
                 </Link>
-
                 <ThemeToggle />
               </div>
             </SidebarMenuButton>
@@ -51,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="no-scrollbar">
         <NavMain items={SIDEBAR.navMain} />
-        <NavThreadHistory threadHistory={SIDEBAR.threadHistory} />
+        <NavThreadHistory />
         <NavSecondary items={SIDEBAR.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

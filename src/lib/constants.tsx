@@ -1,11 +1,6 @@
-import { Compass, Home, LifeBuoy, MessageSquare, Send } from "lucide-react";
+import { Compass, Home, LifeBuoy, Send } from "lucide-react";
 
 export const SIDEBAR = {
-  user: {
-    name: "Abhishek",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Home",
@@ -73,23 +68,6 @@ export const SIDEBAR = {
       title: "Feedback",
       url: "/feedback",
       icon: Send,
-    },
-  ],
-  threadHistory: [
-    {
-      name: "Thread title 1",
-      url: "/thread/1",
-      icon: MessageSquare,
-    },
-    {
-      name: "Thread title 2",
-      url: "/thread/2",
-      icon: MessageSquare,
-    },
-    {
-      name: "Thread title 3",
-      url: "/thread/3",
-      icon: MessageSquare,
     },
   ],
 };
