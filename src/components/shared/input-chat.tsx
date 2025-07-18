@@ -46,8 +46,10 @@ const InputChat = () => {
     <div className="flex items-end gap-2">
       <Textarea
         placeholder={placeholder}
-        value={message ?? undefined}
-        onChange={(e) => setMessage(e.target.value)}
+        value={message ?? ""}
+        onChange={(e) =>
+          setMessage(e.target.value === "" ? undefined : e.target.value)
+        }
         onKeyDown={handleKeyDown}
         onCompositionStart={() => setIsComposing(true)}
         onCompositionEnd={() => setIsComposing(false)}
@@ -56,7 +58,7 @@ const InputChat = () => {
       />
       <Button
         onClick={handleSubmit}
-        disabled={!message?.trim()}
+        disabled={!message?.trim() || isPending}
         size="icon"
         className="shrink-0"
       >
