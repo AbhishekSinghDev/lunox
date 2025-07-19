@@ -3,6 +3,7 @@ import { Error } from "@/lib/type";
 import { conversation, library, libTypeEnum } from "@/server/db/schema";
 import { brave } from "@/services";
 
+import { inngest } from "@/inngest/client";
 import { parseSearchResults } from "@/server/utils";
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
@@ -110,20 +111,38 @@ export const libraryRouter = {
 
       const webResult = parseSearchResults(searchRes);
 
-      const { err: convErr } = await tryCatch(
-        ctx.db.insert(conversation).values({
-          webSearchResult: webResult,
-          libId: libData.id,
-        }),
+      const { data: convRes, err: convErr } = await tryCatch(
+        ctx.db
+          .insert(conversation)
+          .values({
+            webSearchResult: webResult,
+            libId: libData.id,
+          })
+          .returning(),
       );
 
-      if (convErr) {
+      const convData = convRes?.[0];
+
+      if (convErr || !convData) {
         console.error(Error.DATABASE_ERROR, convErr);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create conversation",
         });
       }
+
+      const llmModifiedWebResult = webResult.map((result) => {
+        const { img, ...rest } = result;
+        return rest;
+      });
+
+      await inngest.send({
+        name: "llm-model.web.search.summary",
+        data: {
+          conversationId: convData.id,
+          webSearchResults: llmModifiedWebResult,
+        },
+      });
 
       return {
         success: true,
