@@ -13,7 +13,7 @@ const ThreadDetails = ({ id }: ThreadDetailsProps) => {
   const { thread } = useThread(id);
 
   return (
-    <div className="mx-auto h-full w-full max-w-full">
+    <div className="relative mx-auto h-full w-full max-w-full">
       <h1 className="group/query font-display text-textMain selection:bg-super/50 selection:text-textMain dark:selection:bg-super/10 dark:selection:text-super relative mx-auto text-xl font-[475] !text-wrap text-pretty break-words [word-break:break-word] whitespace-pre-line md:max-w-[760px] lg:text-3xl dark:font-[450]">
         {thread.content}
       </h1>

@@ -36,7 +36,7 @@ export const libraryRouter = {
         ctx.db.query.library.findFirst({
           where: eq(library.id, input.id),
           with: {
-            conversations: true,
+            conversation: true,
           },
         }),
       );

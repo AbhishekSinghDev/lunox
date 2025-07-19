@@ -12,13 +12,13 @@ const ThreadAnswerTab = ({ id }: ThreadAnswerTabProps) => {
   return (
     <div className="mx-auto md:max-w-[760px]">
       {/* sources links  */}
-      <div className="flex flex-wrap items-center gap-3">
-        {thread.conversations?.webSearchResult?.map((item, idx) => (
+      <div className="no-scrollbar flex flex-wrap items-center gap-3 overflow-x-auto">
+        {thread.conversation?.webSearchResult?.map((item, idx) => (
           <Link
             key={idx}
             href={item.url}
             target="_blank"
-            className="bg-accent/80 hover:bg-accent/60 w-[220px] cursor-pointer rounded-lg p-3"
+            className="bg-accent/80 hover:bg-accent/60 max-w-[220px] min-w-[220px] cursor-pointer rounded-lg p-3"
           >
             <div className="flex items-center gap-2">
               <div className="relative aspect-square w-4 overflow-hidden rounded-[2px]">

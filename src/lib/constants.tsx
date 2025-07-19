@@ -4,6 +4,7 @@ import {
   LifeBuoy,
   LucideImage,
   LucideList,
+  LucidePlusSquare,
   LucideSparkles,
   LucideVideo,
   Send,
@@ -11,6 +12,13 @@ import {
 
 export const SIDEBAR = {
   navMain: [
+    {
+      title: "New Chat",
+      url: "/",
+      icon: LucidePlusSquare,
+      isActive: false,
+      items: [],
+    },
     {
       title: "Home",
       url: "/",

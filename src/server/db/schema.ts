@@ -92,7 +92,7 @@ export const libraryRelations = relations(library, ({ one }) => ({
     fields: [library.userId],
     references: [user.id],
   }),
-  conversations: one(conversation),
+  conversation: one(conversation),
 }));
 
 export const conversation = pgTable("conversation", {
