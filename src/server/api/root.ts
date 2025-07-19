@@ -1,4 +1,5 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { braveRouter } from "./routers/brave";
 import { libraryRouter } from "./routers/library";
 
 /**
@@ -8,6 +9,7 @@ import { libraryRouter } from "./routers/library";
  */
 export const appRouter = createTRPCRouter({
   library: libraryRouter,
+  brave: braveRouter,
 });
 
 // export type definition of API

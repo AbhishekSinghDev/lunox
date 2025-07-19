@@ -17,9 +17,11 @@ const InputChat = () => {
 
   const { mutate: createLibraryEntry, isPending } =
     api.library.create.useMutation({
-      onSuccess: async () => {
+      onSuccess: async (opts) => {
         await trpcUtils.library.getAll.invalidate();
         setMessage(undefined);
+
+        console.log(opts.response);
       },
       onError: (opts) => {
         toast.error(opts.message);

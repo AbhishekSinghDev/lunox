@@ -1,6 +1,7 @@
 import { tryCatch } from "@/lib/try-catch";
 import { Error } from "@/lib/type";
 import { library, libTypeEnum } from "@/server/db/schema";
+import { brave } from "@/services";
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import z from "zod";
@@ -79,8 +80,24 @@ export const libraryRouter = {
 
       // in future spin a ingest task process for this query
 
+      // just a temporary web search
+      const { data: searchResult, err: searchErr } = await brave.searchWeb({
+        q: input.message,
+      });
+
+      if (searchErr) {
+        console.error(Error.WEBSEARCH_ERROR, searchErr);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: searchErr.message,
+        });
+      }
+
+      console.log("Web search result:", searchResult);
+
       return {
         success: true,
+        response: searchResult,
       };
     }),
 } satisfies TRPCRouterRecord;
