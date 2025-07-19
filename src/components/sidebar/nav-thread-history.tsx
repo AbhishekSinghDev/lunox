@@ -24,11 +24,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavThreadHistory() {
   const { isMobile } = useSidebar();
+
+  const pathname = usePathname();
 
   const [threads] = api.library.getAll.useSuspenseQuery();
 
@@ -36,13 +40,21 @@ export function NavThreadHistory() {
     return null;
   }
 
+  const activeThreadId = pathname.split("/").pop();
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Thread History</SidebarGroupLabel>
       <SidebarMenu>
         {threads.map((item) => (
           <SidebarMenuItem key={item.id}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton
+              asChild
+              className={cn(
+                activeThreadId === item.id &&
+                  "bg-sidebar-accent text-sidebar-accent-foreground",
+              )}
+            >
               <Link href={`/thread/${item.id}`}>
                 <MessageSquare />
                 <span className="line-clamp-1">

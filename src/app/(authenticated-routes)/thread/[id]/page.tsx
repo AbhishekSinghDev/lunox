@@ -1,3 +1,4 @@
+import ThreadDetails from "@/components/thread/thread-details";
 import { api, HydrateClient } from "@/trpc/server";
 
 interface ThreadDetailPageProps {
@@ -11,7 +12,7 @@ const ThreadDetailPage = async (props: ThreadDetailPageProps) => {
 
   return (
     <HydrateClient>
-      <div>ThreadDetailPage {id}</div>
+      <ThreadDetails id={id} />
     </HydrateClient>
   );
 };

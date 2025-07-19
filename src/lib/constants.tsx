@@ -1,4 +1,13 @@
-import { Compass, Home, LifeBuoy, Send } from "lucide-react";
+import {
+  Compass,
+  Home,
+  LifeBuoy,
+  LucideImage,
+  LucideList,
+  LucideSparkles,
+  LucideVideo,
+  Send,
+} from "lucide-react";
 
 export const SIDEBAR = {
   navMain: [
@@ -71,3 +80,23 @@ export const SIDEBAR = {
     },
   ],
 };
+
+export const THREAD_DETAILS_TABS = [
+  {
+    title: "Answer",
+    icon: LucideSparkles,
+  },
+  {
+    title: "Images",
+    icon: LucideImage,
+  },
+  {
+    title: "Videos",
+    icon: LucideVideo,
+  },
+  {
+    title: "Sources",
+    icon: LucideList,
+    badge: 10,
+  },
+] as const;
