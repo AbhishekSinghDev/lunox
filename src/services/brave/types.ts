@@ -190,7 +190,7 @@ interface ForumData {
   top_comment?: string;
 }
 
-interface QA {
+export interface QA {
   question: string;
   answer: string;
   title: string;
@@ -382,7 +382,7 @@ interface LocationDescription {
 }
 
 // Search result types
-interface SearchResult extends Result {
+export interface SearchResult extends Result {
   type: "search_result" | "discussion";
   subtype: "generic";
   is_live: boolean;
@@ -422,7 +422,7 @@ interface DiscussionResult extends SearchResult {
   data?: ForumData;
 }
 
-interface NewsResult extends Result {
+export interface NewsResult extends Result {
   type: "news_result";
   meta_url?: MetaUrl;
   source?: string;

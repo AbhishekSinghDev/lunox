@@ -1,6 +1,8 @@
+import type { ParsedSearchResult } from "@/lib/type";
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  jsonb,
   pgEnum,
   pgTable,
   text,
@@ -89,5 +91,29 @@ export const libraryRelations = relations(library, ({ one }) => ({
   user: one(user, {
     fields: [library.userId],
     references: [user.id],
+  }),
+  conversations: one(conversation),
+}));
+
+export const conversation = pgTable("conversation", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  webSearchResult: jsonb("web_search_result").$type<ParsedSearchResult[]>(),
+  aiResponse: text("ai_response"),
+  libId: uuid("lib_id")
+    .notNull()
+    .unique()
+    .references(() => library.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => new Date())
+    .notNull(),
+});
+
+export const conversationRelations = relations(conversation, ({ one }) => ({
+  library: one(library, {
+    fields: [conversation.libId],
+    references: [library.id],
   }),
 }));

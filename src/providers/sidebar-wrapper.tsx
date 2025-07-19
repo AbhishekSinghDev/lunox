@@ -12,7 +12,9 @@ const SidebarWrapper = ({ children }: { children: React.ReactNode }) => {
         <AppSidebar />
         <SidebarInset className="bg-background dark:bg-secondary">
           <SidebarHeaderWrapper />
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+          <div className="flex max-h-[calc(100vh-5rem)] flex-1 flex-col gap-4 overflow-hidden p-4 pt-0">
+            {children}
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </HydrateClient>

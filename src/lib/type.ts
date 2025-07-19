@@ -27,3 +27,23 @@ export enum Error {
   UNAUTHORIZED = "UNAUTHORIZED",
   WEBSEARCH_ERROR = "WEBSEARCH_ERROR",
 }
+
+export type ParsedSearchResult = {
+  type: string;
+  title: string;
+  url: string;
+  img?: string;
+  description?: string;
+  content?: string;
+  source?: string;
+  date?: string;
+  rating?: number;
+  category?: string;
+  keyPoints?: string[];
+  location?: {
+    address?: string;
+    coordinates?: number[];
+    contact?: string;
+    hours?: string;
+  };
+};

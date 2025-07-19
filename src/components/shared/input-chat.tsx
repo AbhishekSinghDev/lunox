@@ -5,10 +5,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useChatType, useInputChat } from "@/stores/chat-input-store";
 import { api } from "@/trpc/react";
 import { Loader2, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const InputChat = () => {
+  const router = useRouter();
   const { message, setMessage } = useInputChat();
   const { type } = useChatType();
   const [isComposing, setIsComposing] = useState(false);
@@ -20,8 +22,7 @@ const InputChat = () => {
       onSuccess: async (opts) => {
         await trpcUtils.library.getAll.invalidate();
         setMessage(undefined);
-
-        console.log(opts.response);
+        router.push(`/thread/${opts.libId}`);
       },
       onError: (opts) => {
         toast.error(opts.message);

@@ -20,7 +20,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${outfit.className}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${outfit.className} no-scrollbar`}
+      suppressHydrationWarning
+    >
       <body>
         <AuthenticatedProvidersWrapper>
           {children}

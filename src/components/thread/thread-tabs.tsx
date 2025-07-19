@@ -4,6 +4,7 @@ import { THREAD_DETAILS_TABS } from "@/lib/constants";
 import type { ActiveTab } from "@/lib/type";
 import { cn } from "@/lib/utils";
 import { useActiveTab } from "@/stores/thread";
+import { Button } from "../ui/button";
 
 const ThreadTabs = () => {
   const { activeTab, setActiveTab } = useActiveTab();
@@ -15,13 +16,13 @@ const ThreadTabs = () => {
   return (
     <div className="mx-auto mt-6 flex items-center gap-x-2 border-b border-b-gray-700 pb-2 md:max-w-[760px]">
       {THREAD_DETAILS_TABS.map((item) => (
-        <button
+        <Button
           key={item.title}
+          size="sm"
+          variant={activeTab === item.title ? "default" : "ghost"}
           className={cn(
-            "text-foreground hover:text-foreground/80 relative flex cursor-pointer items-center gap-1 px-2 py-1 text-sm font-medium",
-            activeTab === item.title
-              ? "text-foreground/80 dark:bg-background/60 bg-primary text-primary-foreground rounded-md"
-              : "text-foreground",
+            "relative flex cursor-pointer items-center gap-1 px-2 py-1 text-sm font-medium",
+            activeTab === item.title ? "rounded-md" : "",
           )}
           onClick={() => handleActiveTabChange(item.title)}
         >
@@ -36,7 +37,7 @@ const ThreadTabs = () => {
           {/* {activeTab === item.title && (
             <span className="absolute -bottom-2 left-0 z-10 h-0.5 w-full rounded bg-yellow-500" />
           )} */}
-        </button>
+        </Button>
       ))}
     </div>
   );

@@ -1,7 +1,9 @@
 import { tryCatch } from "@/lib/try-catch";
 import { Error } from "@/lib/type";
-import { library, libTypeEnum } from "@/server/db/schema";
+import { conversation, library, libTypeEnum } from "@/server/db/schema";
 import { brave } from "@/services";
+
+import { parseSearchResults } from "@/server/utils";
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import z from "zod";
@@ -33,6 +35,9 @@ export const libraryRouter = {
       const { data: thread, err: threadFetchErr } = await tryCatch(
         ctx.db.query.library.findFirst({
           where: eq(library.id, input.id),
+          with: {
+            conversations: true,
+          },
         }),
       );
 
@@ -62,15 +67,20 @@ export const libraryRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { err } = await tryCatch(
-        ctx.db.insert(library).values({
-          content: input.message,
-          userId: ctx.session.user.id,
-          type: input.type,
-        }),
+      const { data: libraryData, err } = await tryCatch(
+        ctx.db
+          .insert(library)
+          .values({
+            content: input.message,
+            userId: ctx.session.user.id,
+            type: input.type,
+          })
+          .returning(),
       );
 
-      if (err) {
+      const libData = libraryData?.[0];
+
+      if (err || !libData) {
         console.error(Error.DATABASE_ERROR, err);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -78,11 +88,16 @@ export const libraryRouter = {
         });
       }
 
-      // in future spin a ingest task process for this query
+      if (input.type === "research") {
+        return {
+          success: true,
+          libId: libData.id,
+        };
+      }
 
-      // just a temporary web search
-      const { data: searchResult, err: searchErr } = await brave.searchWeb({
+      const { data: searchRes, err: searchErr } = await brave.searchWeb({
         q: input.message,
+        count: 5,
       });
 
       if (searchErr) {
@@ -93,11 +108,26 @@ export const libraryRouter = {
         });
       }
 
-      console.log("Web search result:", searchResult);
+      const webResult = parseSearchResults(searchRes);
+
+      const { err: convErr } = await tryCatch(
+        ctx.db.insert(conversation).values({
+          webSearchResult: webResult,
+          libId: libData.id,
+        }),
+      );
+
+      if (convErr) {
+        console.error(Error.DATABASE_ERROR, convErr);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create conversation",
+        });
+      }
 
       return {
         success: true,
-        response: searchResult,
+        libId: libData.id,
       };
     }),
 } satisfies TRPCRouterRecord;
