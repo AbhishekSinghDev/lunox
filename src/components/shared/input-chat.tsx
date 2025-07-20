@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { INNGEST_ID_PARAM } from "@/lib/constants";
 import { useChatType, useInputChat } from "@/stores/chat-input-store";
+import { useInngestId } from "@/stores/inngest-store";
 import { api } from "@/trpc/react";
 import { Loader2, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 const InputChat = () => {
   const router = useRouter();
+  const { setInngestId } = useInngestId();
   const { message, setMessage } = useInputChat();
   const { type } = useChatType();
   const [isComposing, setIsComposing] = useState(false);
@@ -23,9 +24,8 @@ const InputChat = () => {
       onSuccess: async (opts) => {
         await trpcUtils.library.getAll.invalidate();
         setMessage(undefined);
-        router.push(
-          `/thread/${opts.libId}?${INNGEST_ID_PARAM}=${opts.inngestId}`,
-        );
+        setInngestId(opts.inngestId ?? null);
+        router.push(`/thread/${opts.libId}`);
       },
       onError: (opts) => {
         toast.error(opts.message);
@@ -62,7 +62,7 @@ const InputChat = () => {
         onKeyDown={handleKeyDown}
         onCompositionStart={() => setIsComposing(true)}
         onCompositionEnd={() => setIsComposing(false)}
-        className="no-scrollbar max-h-52 min-h-[44px] resize-none border-0 bg-transparent p-3 shadow-none focus-visible:ring-0"
+        className="no-scrollbar bg-accent max-h-52 min-h-[44px] resize-none border-0 p-3 shadow-none focus-visible:ring-0"
         rows={1}
       />
       <Button

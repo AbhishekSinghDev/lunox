@@ -19,6 +19,11 @@ export type ActiveTabStore = {
   setActiveTab: (tab: ActiveTab) => void;
 };
 
+export type InngestIdStore = {
+  inngestId: string | null;
+  setInngestId: (id: string | null) => void;
+};
+
 export enum Error {
   SERVER_ERROR = "SERVER_ERROR",
   NOT_FOUND = "NOT_FOUND",
@@ -64,3 +69,38 @@ export type InngestRunResponse = {
     failedItems: number;
   };
 };
+
+interface CandidatePart {
+  text: string;
+}
+
+interface CandidateContent {
+  parts: CandidatePart[];
+  role: string;
+}
+
+interface Candidate {
+  avgLogprobs: number;
+  content: CandidateContent;
+  finishReason: string;
+}
+
+interface TokenDetails {
+  modality: string;
+  tokenCount: number;
+}
+
+interface UsageMetadata {
+  candidatesTokenCount: number;
+  candidatesTokensDetails: TokenDetails[];
+  promptTokenCount: number;
+  promptTokensDetails: TokenDetails[];
+  totalTokenCount: number;
+}
+
+export interface AiResponse {
+  candidates: Candidate[];
+  modelVersion: string;
+  responseId: string;
+  usageMetadata: UsageMetadata;
+}

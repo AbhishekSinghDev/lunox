@@ -1,4 +1,5 @@
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "sonner";
 import ThemeProvider from "./theme-provider";
 
 const UnAuthenticatedProvidersWrapper = ({
@@ -15,6 +16,7 @@ const UnAuthenticatedProvidersWrapper = ({
         disableTransitionOnChange
       >
         {children}
+        <Toaster />
       </ThemeProvider>
     </TRPCReactProvider>
   );

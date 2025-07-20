@@ -12,7 +12,7 @@ const SidebarWrapper = ({ children }: { children: React.ReactNode }) => {
         <AppSidebar />
         <SidebarInset className="bg-background dark:bg-secondary">
           <SidebarHeaderWrapper />
-          <div className="flex max-h-[calc(100vh-5rem)] flex-1 flex-col gap-4 overflow-hidden p-4 pt-0">
+          <div className="flex max-h-[calc(100vh-5rem)] flex-1 flex-col gap-4 overflow-hidden p-4 pt-0 pb-0 lg:pb-4">
             {children}
           </div>
         </SidebarInset>

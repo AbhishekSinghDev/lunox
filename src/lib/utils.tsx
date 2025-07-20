@@ -17,7 +17,8 @@ export const getSidebarHeaderAccordingToPathname = (pathname: string) => {
   if (pathname === "/") {
     return <SidebarDashboardHeader />;
   } else if (pathname.startsWith("/thread")) {
-    return <SidebarThreadHeader />;
+    const threadId = pathname.split("/").pop();
+    return <SidebarThreadHeader threadId={threadId} />;
   } else return <SidebarDashboardHeader />;
 };
 
@@ -28,24 +29,14 @@ export const getTabContentAccordingToActiveTab = (
 ) => {
   switch (activeTab) {
     case "Answer":
-      return (
-        <ThreadAnswerTab id={threadId} conversationData={conversationData} />
-      );
+      return <ThreadAnswerTab conversationData={conversationData} />;
     case "Images":
-      return (
-        <ThreadImagesTab id={threadId} conversationData={conversationData} />
-      );
+      return <ThreadImagesTab conversationData={conversationData} />;
     case "Videos":
-      return (
-        <ThreadVideosTab id={threadId} conversationData={conversationData} />
-      );
+      return <ThreadVideosTab conversationData={conversationData} />;
     case "Sources":
-      return (
-        <ThreadSourcesTab id={threadId} conversationData={conversationData} />
-      );
+      return <ThreadSourcesTab conversationData={conversationData} />;
     default:
-      return (
-        <ThreadAnswerTab id={threadId} conversationData={conversationData} />
-      );
+      return <ThreadAnswerTab conversationData={conversationData} />;
   }
 };

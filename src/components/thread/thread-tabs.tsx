@@ -3,7 +3,7 @@
 import { THREAD_DETAILS_TABS } from "@/lib/constants";
 import type { ActiveTab } from "@/lib/type";
 import { cn } from "@/lib/utils";
-import { useActiveTab } from "@/stores/thread";
+import { useActiveTab } from "@/stores/thread-store";
 import { Button } from "../ui/button";
 
 const ThreadTabs = () => {
