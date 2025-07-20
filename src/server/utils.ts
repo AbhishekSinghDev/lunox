@@ -415,23 +415,21 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
   }
 
   // Sort by relevance and limit results
-  return results
-    .sort((a, b) => {
-      const typeOrder = {
-        web: 0,
-        news: 1,
-        faq: 2,
-        infobox: 3,
-        video: 4,
-        discussion: 5,
-        location: 6,
-        local_poi: 7,
-        local_description: 8,
-      };
-      return (
-        (typeOrder[a.type as keyof typeof typeOrder] ?? 9) -
-        (typeOrder[b.type as keyof typeof typeOrder] ?? 9)
-      );
-    })
-    .slice(0, 12);
+  return results.sort((a, b) => {
+    const typeOrder = {
+      web: 0,
+      news: 1,
+      faq: 2,
+      infobox: 3,
+      video: 4,
+      discussion: 5,
+      location: 6,
+      local_poi: 7,
+      local_description: 8,
+    };
+    return (
+      (typeOrder[a.type as keyof typeof typeOrder] ?? 9) -
+      (typeOrder[b.type as keyof typeof typeOrder] ?? 9)
+    );
+  });
 }

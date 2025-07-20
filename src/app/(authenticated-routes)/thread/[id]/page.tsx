@@ -1,5 +1,6 @@
 import ThreadDetails from "@/components/thread/thread-details";
 import { api, HydrateClient } from "@/trpc/server";
+import { Suspense } from "react";
 
 interface ThreadDetailPageProps {
   params: Promise<{ id: string }>;
@@ -12,7 +13,9 @@ const ThreadDetailPage = async (props: ThreadDetailPageProps) => {
 
   return (
     <HydrateClient>
-      <ThreadDetails id={id} />
+      <Suspense fallback={<div>loading...</div>}>
+        <ThreadDetails id={id} />
+      </Suspense>
     </HydrateClient>
   );
 };

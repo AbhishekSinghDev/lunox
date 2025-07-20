@@ -95,18 +95,21 @@ export const THREAD_DETAILS_TABS = [
   {
     title: "Answer",
     icon: LucideSparkles,
+    badge: -1,
   },
   {
     title: "Images",
     icon: LucideImage,
+    badge: -1,
   },
   {
     title: "Videos",
     icon: LucideVideo,
+    badge: -1,
   },
   {
     title: "Sources",
     icon: LucideList,
-    badge: 10,
+    badge: 0,
   },
 ] as const;

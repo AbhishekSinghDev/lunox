@@ -127,7 +127,7 @@ const ThreadAiResponse = ({ AiResponse }: ThreadAiResponseProps) => {
           ),
         }}
       >
-        {AiResponse.candidates[0]?.content.parts[0]?.text}
+        {AiResponse?.candidates[0]?.content.parts[0]?.text}
       </Markdown>
     </div>
   );

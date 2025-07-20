@@ -1,5 +1,6 @@
 import { type conversation } from "@/server/db/schema";
 import Image from "next/image";
+import { memo } from "react";
 
 interface ThreadVideosTabProps {
   conversationData?: typeof conversation.$inferInsert;
@@ -105,4 +106,4 @@ const ThreadVideosTab = ({ conversationData }: ThreadVideosTabProps) => {
   );
 };
 
-export default ThreadVideosTab;
+export default memo(ThreadVideosTab);

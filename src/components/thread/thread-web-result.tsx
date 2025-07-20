@@ -13,8 +13,8 @@ const ThreadWebResult = ({ webResult }: ThreadContentProps) => {
 
   return (
     <div className="mx-auto w-full max-w-6xl">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-        {webResult.map((item, idx) => (
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+        {webResult.slice(0, 6).map((item, idx) => (
           <Link
             key={idx}
             href={item.url}

@@ -24,7 +24,7 @@ const ThreadDetails = ({ id }: ThreadDetailsProps) => {
                 {item.userQuery}
               </h1>
 
-              <ThreadTabs />
+              <ThreadTabs conversation={item} />
 
               <ThreadContent id={id} conversation={item} />
             </div>

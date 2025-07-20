@@ -3,6 +3,7 @@
 import type { AiResponse } from "@/lib/type";
 import { type conversation } from "@/server/db/schema";
 
+import { memo } from "react";
 import ThreadAiResponse from "./thread-ai-response";
 import ThreadWebResult from "./thread-web-result";
 
@@ -28,4 +29,4 @@ const ThreadAnswerTab = ({ conversationData }: ThreadAnswerTabProps) => {
   );
 };
 
-export default ThreadAnswerTab;
+export default memo(ThreadAnswerTab);

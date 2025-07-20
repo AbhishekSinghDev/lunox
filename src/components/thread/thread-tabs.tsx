@@ -3,15 +3,22 @@
 import { THREAD_DETAILS_TABS } from "@/lib/constants";
 import type { ActiveTab } from "@/lib/type";
 import { cn } from "@/lib/utils";
+import type { conversation } from "@/server/db/schema";
 import { useActiveTab } from "@/stores/thread-store";
 import { Button } from "../ui/button";
 
-const ThreadTabs = () => {
+interface ThreadTabsProps {
+  conversation?: typeof conversation.$inferInsert;
+}
+
+const ThreadTabs = ({ conversation }: ThreadTabsProps) => {
   const { activeTab, setActiveTab } = useActiveTab();
 
   const handleActiveTabChange = (tab: ActiveTab) => {
     setActiveTab(tab);
   };
+
+  const sourcesCount = (conversation?.webSearchResult ?? []).length;
 
   return (
     <div className="mx-auto mt-6 flex items-center gap-x-2 border-b border-b-gray-700 pb-2 md:max-w-[760px]">
@@ -28,15 +35,11 @@ const ThreadTabs = () => {
         >
           {<item.icon className="h-4 w-4" />}
           <span>{item.title}</span>
-          {/* {item.badge && (
+          {item.badge >= 0 && (
             <span className="ml-1 rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">
-              {item.badge}
+              {sourcesCount ?? item.badge}
             </span>
-          )} */}
-
-          {/* {activeTab === item.title && (
-            <span className="absolute -bottom-2 left-0 z-10 h-0.5 w-full rounded bg-yellow-500" />
-          )} */}
+          )}
         </Button>
       ))}
     </div>
