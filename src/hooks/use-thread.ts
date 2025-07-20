@@ -1,10 +1,23 @@
 import { api } from "@/trpc/react";
 
 const useThread = (id: string) => {
-  const [thread] = api.library.getById.useSuspenseQuery({ id });
+  const { data, isLoading, isError } = api.library.getById.useQuery(
+    { id },
+    {
+      refetchInterval(data) {
+        if (data.state.data?.id) {
+          return false;
+        }
+
+        return 1000;
+      },
+    },
+  );
 
   return {
-    thread: thread,
+    thread: data,
+    isLoading,
+    isError,
   };
 };
 
