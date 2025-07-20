@@ -87,21 +87,21 @@ export const library = pgTable("library", {
     .notNull(),
 });
 
-export const libraryRelations = relations(library, ({ one }) => ({
+export const libraryRelations = relations(library, ({ one, many }) => ({
   user: one(user, {
     fields: [library.userId],
     references: [user.id],
   }),
-  conversation: one(conversation),
+  conversations: many(conversation),
 }));
 
 export const conversation = pgTable("conversation", {
   id: uuid("id").defaultRandom().primaryKey(),
+  userQuery: text("user_query"),
   webSearchResult: jsonb("web_search_result").$type<ParsedSearchResult[]>(),
   aiResponse: text("ai_response"),
   libId: uuid("lib_id")
     .notNull()
-    .unique()
     .references(() => library.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())

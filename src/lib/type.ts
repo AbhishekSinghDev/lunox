@@ -26,6 +26,7 @@ export enum Error {
   VALIDATION_ERROR = "VALIDATION_ERROR",
   UNAUTHORIZED = "UNAUTHORIZED",
   WEBSEARCH_ERROR = "WEBSEARCH_ERROR",
+  INNGEST_ERROR = "INNGEST_ERROR",
 }
 
 export type ParsedSearchResult = {
@@ -45,5 +46,21 @@ export type ParsedSearchResult = {
     coordinates?: number[];
     contact?: string;
     hours?: string;
+  };
+};
+
+export type InngestRunResponse = {
+  run_id: string;
+  run_started_at: string;
+  function_id: string;
+  function_version: number;
+  environment_id: string;
+  event_id: string;
+  status: "Completed" | "Running" | "Cancelled";
+  ended_at: string;
+  output: {
+    status: string;
+    processedItems: number;
+    failedItems: number;
   };
 };

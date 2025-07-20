@@ -10,6 +10,8 @@ import {
   Send,
 } from "lucide-react";
 
+export const INNGEST_ID_PARAM = "inngest_id";
+
 export const SIDEBAR = {
   navMain: [
     {
@@ -21,7 +23,7 @@ export const SIDEBAR = {
     },
     {
       title: "Home",
-      url: "/",
+      url: "/home",
       icon: Home,
       isActive: true,
       items: [

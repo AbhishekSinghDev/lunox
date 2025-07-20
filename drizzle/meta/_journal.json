@@ -15,6 +15,20 @@
       "when": 1752950087396,
       "tag": "0001_normal_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753003497026,
+      "tag": "0002_cool_shinobi_shaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1753003780761,
+      "tag": "0003_mature_misty_knight",
+      "breakpoints": true
     }
   ]
 }

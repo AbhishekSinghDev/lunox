@@ -1,19 +1,61 @@
-import useThread from "@/hooks/use-thread";
+"use client";
+
+import { INNGEST_ID_PARAM } from "@/lib/constants";
+import { type conversation } from "@/server/db/schema";
+import { api } from "@/trpc/react";
+import { skipToken } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useQueryState } from "nuqs";
+import { useEffect } from "react";
+
 interface ThreadAnswerTabProps {
   id: string;
+  conversationData?: typeof conversation.$inferInsert;
 }
 
-const ThreadAnswerTab = ({ id }: ThreadAnswerTabProps) => {
-  const { thread } = useThread(id);
+const ThreadAnswerTab = ({ id, conversationData }: ThreadAnswerTabProps) => {
+  const trpcUtils = api.useUtils();
+  const [inngestId] = useQueryState(INNGEST_ID_PARAM, {
+    clearOnDefault: true,
+  });
+
+  const { data: inngestRes, isLoading: isLoadingInngestRunResult } =
+    api.inngest.getRunById.useQuery(inngestId ? { inngestId } : skipToken, {
+      enabled:
+        !!inngestId &&
+        !conversationData?.webSearchResult &&
+        !conversationData?.aiResponse,
+      refetchInterval: (data) => {
+        if (
+          data.state.data?.status === "Completed" ||
+          data.state.data?.status === "Cancelled"
+        ) {
+          return false;
+        }
+
+        return 1000;
+      },
+    });
+
+  useEffect(() => {
+    if (inngestRes?.status === "Completed") {
+      void trpcUtils.library.getById.invalidate({ id });
+    }
+  }, [inngestRes?.status, trpcUtils]);
+
+  if (isLoadingInngestRunResult || inngestRes?.status === "Running") {
+    return (
+      <div className="mx-auto max-w-[760px] p-4 text-center">Loading...</div>
+    );
+  }
 
   return (
     <div className="mx-auto md:max-w-[760px]">
       {/* sources links  */}
       <div className="no-scrollbar flex flex-wrap items-center gap-3 overflow-x-auto">
-        {thread.conversation?.webSearchResult?.map((item, idx) => (
+        {conversationData?.webSearchResult?.map((item, idx) => (
           <Link
             key={idx}
             href={item.url}

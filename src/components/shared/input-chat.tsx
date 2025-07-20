@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { INNGEST_ID_PARAM } from "@/lib/constants";
 import { useChatType, useInputChat } from "@/stores/chat-input-store";
 import { api } from "@/trpc/react";
 import { Loader2, Send } from "lucide-react";
@@ -22,7 +23,9 @@ const InputChat = () => {
       onSuccess: async (opts) => {
         await trpcUtils.library.getAll.invalidate();
         setMessage(undefined);
-        router.push(`/thread/${opts.libId}`);
+        router.push(
+          `/thread/${opts.libId}?${INNGEST_ID_PARAM}=${opts.inngestId}`,
+        );
       },
       onError: (opts) => {
         toast.error(opts.message);

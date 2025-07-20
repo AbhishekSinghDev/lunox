@@ -1,10 +1,8 @@
 import { tryCatch } from "@/lib/try-catch";
 import { Error } from "@/lib/type";
-import { conversation, library, libTypeEnum } from "@/server/db/schema";
-import { brave } from "@/services";
+import { library, libTypeEnum } from "@/server/db/schema";
 
 import { inngest } from "@/inngest/client";
-import { parseSearchResults } from "@/server/utils";
 import { TRPCError, type TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import z from "zod";
@@ -37,7 +35,7 @@ export const libraryRouter = {
         ctx.db.query.library.findFirst({
           where: eq(library.id, input.id),
           with: {
-            conversation: true,
+            conversations: true,
           },
         }),
       );
@@ -93,60 +91,21 @@ export const libraryRouter = {
         return {
           success: true,
           libId: libData.id,
+          inngestId: null,
         };
       }
 
-      const { data: searchRes, err: searchErr } = await brave.searchWeb({
-        q: input.message,
-        count: 5,
-      });
-
-      if (searchErr) {
-        console.error(Error.WEBSEARCH_ERROR, searchErr);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: searchErr.message,
-        });
-      }
-
-      const webResult = parseSearchResults(searchRes);
-
-      const { data: convRes, err: convErr } = await tryCatch(
-        ctx.db
-          .insert(conversation)
-          .values({
-            webSearchResult: webResult,
-            libId: libData.id,
-          })
-          .returning(),
-      );
-
-      const convData = convRes?.[0];
-
-      if (convErr || !convData) {
-        console.error(Error.DATABASE_ERROR, convErr);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create conversation",
-        });
-      }
-
-      const llmModifiedWebResult = webResult.map((result) => {
-        const { img, ...rest } = result;
-        return rest;
-      });
-
-      await inngest.send({
-        name: "llm-model.web.search.summary",
+      const inngestRes = await inngest.send({
+        name: "web-search-and-generate-llm-summary",
         data: {
-          conversationId: convData.id,
-          webSearchResults: llmModifiedWebResult,
+          libId: libData.id,
+          searchQuery: input.message,
         },
       });
 
       return {
-        success: true,
         libId: libData.id,
+        inngestId: inngestRes.ids[0],
       };
     }),
 } satisfies TRPCRouterRecord;
