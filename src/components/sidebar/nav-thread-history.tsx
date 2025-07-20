@@ -45,7 +45,7 @@ export function NavThreadHistory() {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Thread History</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className="no-scrollbar max-h-[calc(100vh-20rem)] overflow-y-auto">
         {threads.map((item) => (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
@@ -91,6 +91,8 @@ export function NavThreadHistory() {
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
+
+        <div className="h-[100px]" />
       </SidebarMenu>
     </SidebarGroup>
   );

@@ -6,6 +6,163 @@ import type {
   SearchResult,
 } from "@/services/brave/types";
 
+type ImageContainer =
+  | SearchResult
+  | NewsResult
+  | QA
+  | { thumbnail?: { src?: string; original?: string } }
+  | { properties?: { url?: string; resized?: string } }
+  | { video?: { thumbnail?: { src?: string; original?: string } } }
+  | { movie?: { thumbnail?: { src?: string; original?: string } } }
+  | { article?: { thumbnail?: { src?: string; original?: string } } }
+  | { product?: { thumbnail?: { src?: string; original?: string } } }
+  | {
+      recipe?: {
+        thumbnail?: { src?: string; original?: string };
+        video?: { thumbnail?: { src?: string; original?: string } };
+      };
+    }
+  | { review?: { thumbnail?: { src?: string; original?: string } } }
+  | { creative_work?: { thumbnail?: { src?: string; original?: string } } }
+  | { music_recording?: { thumbnail?: { src?: string; original?: string } } }
+  | {
+      deep_results?: {
+        images?: Array<{
+          thumbnail?: { src?: string; original?: string };
+          url?: string;
+          properties?: { url?: string; resized?: string };
+        }>;
+      };
+    }
+  | { pictures?: { results?: Array<{ src?: string; original?: string }> } }
+  | { images?: Array<{ src?: string; original?: string }> };
+
+// Helper function to extract all possible images from various sources
+function extractImages(item: ImageContainer): string | undefined {
+  const images: string[] = [];
+
+  // Thumbnail sources
+  if ("thumbnail" in item && item.thumbnail?.src) {
+    images.push(item.thumbnail.src);
+  }
+  if ("thumbnail" in item && item.thumbnail?.original) {
+    images.push(item.thumbnail.original);
+  }
+
+  // Image properties
+  if ("properties" in item && item.properties?.url) {
+    images.push(item.properties.url);
+  }
+  if ("properties" in item && item.properties?.resized) {
+    images.push(item.properties.resized);
+  }
+
+  // Video thumbnail
+  if ("video" in item && item.video?.thumbnail?.src) {
+    images.push(item.video.thumbnail.src);
+  }
+  if ("video" in item && item.video?.thumbnail?.original) {
+    images.push(item.video.thumbnail.original);
+  }
+
+  // Movie thumbnail
+  if ("movie" in item && item.movie?.thumbnail?.src) {
+    images.push(item.movie.thumbnail.src);
+  }
+  if ("movie" in item && item.movie?.thumbnail?.original) {
+    images.push(item.movie.thumbnail.original);
+  }
+
+  // Article thumbnail
+  if ("article" in item && item.article?.thumbnail?.src) {
+    images.push(item.article.thumbnail.src);
+  }
+  if ("article" in item && item.article?.thumbnail?.original) {
+    images.push(item.article.thumbnail.original);
+  }
+
+  // Product thumbnail
+  if ("product" in item && item.product?.thumbnail?.src) {
+    images.push(item.product.thumbnail.src);
+  }
+  if ("product" in item && item.product?.thumbnail?.original) {
+    images.push(item.product.thumbnail.original);
+  }
+
+  // Recipe thumbnail
+  if ("recipe" in item && item.recipe?.thumbnail?.src) {
+    images.push(item.recipe.thumbnail.src);
+  }
+  if ("recipe" in item && item.recipe?.thumbnail?.original) {
+    images.push(item.recipe.thumbnail.original);
+  }
+
+  // Review thumbnail
+  if ("review" in item && item.review?.thumbnail?.src) {
+    images.push(item.review.thumbnail.src);
+  }
+  if ("review" in item && item.review?.thumbnail?.original) {
+    images.push(item.review.thumbnail.original);
+  }
+
+  // Creative work thumbnail
+  if ("creative_work" in item && item.creative_work?.thumbnail?.src) {
+    images.push(item.creative_work.thumbnail.src);
+  }
+  if ("creative_work" in item && item.creative_work?.thumbnail?.original) {
+    images.push(item.creative_work.thumbnail.original);
+  }
+
+  // Music recording thumbnail
+  if ("music_recording" in item && item.music_recording?.thumbnail?.src) {
+    images.push(item.music_recording.thumbnail.src);
+  }
+  if ("music_recording" in item && item.music_recording?.thumbnail?.original) {
+    images.push(item.music_recording.thumbnail.original);
+  }
+
+  // Deep results images
+  if ("deep_results" in item && item.deep_results?.images) {
+    item.deep_results.images.forEach((img) => {
+      if (img.thumbnail?.src) images.push(img.thumbnail.src);
+      if (img.thumbnail?.original) images.push(img.thumbnail.original);
+      if (img.url) images.push(img.url);
+      if (img.properties?.url) images.push(img.properties.url);
+      if (img.properties?.resized) images.push(img.properties.resized);
+    });
+  }
+
+  // Pictures from location results
+  if ("pictures" in item && item.pictures?.results) {
+    item.pictures.results.forEach((pic) => {
+      if (pic.src) images.push(pic.src);
+      if (pic.original) images.push(pic.original);
+    });
+  }
+
+  // Infobox images
+  if ("images" in item && item.images) {
+    item.images.forEach((img) => {
+      if (img.src) images.push(img.src);
+      if (img.original) images.push(img.original);
+    });
+  }
+
+  // Recipe video thumbnail
+  if ("recipe" in item && item.recipe?.video?.thumbnail?.src) {
+    images.push(item.recipe.video.thumbnail.src);
+  }
+  if ("recipe" in item && item.recipe?.video?.thumbnail?.original) {
+    images.push(item.recipe.video.thumbnail.original);
+  }
+
+  // Filter out duplicates and return the first valid image
+  const uniqueImages = [
+    ...new Set(images.filter((img) => img && img.trim() !== "")),
+  ];
+  return uniqueImages.length > 0 ? uniqueImages[0] : undefined;
+}
+
 export function parseSearchResults(searchRes: BraveSearchApiResponse) {
   const results: Array<ParsedSearchResult> = [];
 
@@ -20,7 +177,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "web",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.extra_snippets?.join(" ") ?? item.description,
           source: item.profile?.name,
@@ -87,7 +244,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "news",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.extra_snippets?.join(" ") ?? item.description,
           source: item.source ?? item.profile?.name,
@@ -111,6 +268,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "faq",
           title: item.title,
           url: item.url,
+          img: extractImages(item),
           description: `Q: ${item.question}`,
           content: `A: ${item.answer}`,
           source: item.meta_url?.hostname,
@@ -130,7 +288,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "infobox",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.long_desc,
           source: item.profile?.name,
@@ -147,7 +305,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "video",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.video?.duration
             ? `Duration: ${item.video.duration}`
@@ -172,7 +330,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "discussion",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.data?.top_comment ?? item.description,
           source: item.data?.forum_name ?? item.profile?.name,
@@ -189,7 +347,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
           type: "location",
           title: item.title,
           url: item.url,
-          img: item.profile?.img,
+          img: extractImages(item),
           description: item.description,
           content: item.postal_address?.displayAddress ?? item.description,
           source: item.profile?.name,
@@ -218,7 +376,7 @@ export function parseSearchResults(searchRes: BraveSearchApiResponse) {
         type: "local_poi",
         title: item.title,
         url: item.url,
-        img: item.profile?.img,
+        img: extractImages(item),
         description: item.description,
         content: item.postal_address?.displayAddress ?? item.description,
         source: item.profile?.name,
