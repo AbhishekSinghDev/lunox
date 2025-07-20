@@ -20,7 +20,11 @@ const UnAuthenticatedRoutes = ({
   children,
 }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <html lang="en" className={`${outfit.className}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${outfit.className} scroll-smooth`}
+      suppressHydrationWarning
+    >
       <body>
         <UnAuthenticatedProvidersWrapper>
           {children}
