@@ -104,3 +104,8 @@ export interface AiResponse {
   responseId: string;
   usageMetadata: UsageMetadata;
 }
+
+export type InngestLlmModelGenerateWebSearchSummaryEventQuery = {
+  searchQuery: string;
+  libId: string;
+};

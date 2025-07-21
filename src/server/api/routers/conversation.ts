@@ -8,7 +8,7 @@ export const conversationRouter = {
     .input(
       z.object({
         libId: z.string().min(1, "Library ID is required"),
-        userQuery: z.string().min(1, "User query is required"),
+        userQuery: z.string().min(1, "User query is required").trim(),
       }),
     )
     .mutation(async ({ input }) => {

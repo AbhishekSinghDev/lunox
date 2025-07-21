@@ -1,4 +1,7 @@
-import { Error } from "@/lib/type";
+import {
+  Error,
+  type InngestLlmModelGenerateWebSearchSummaryEventQuery,
+} from "@/lib/type";
 import { db } from "@/server/db";
 import { conversation } from "@/server/db/schema";
 import { parseSearchResults } from "@/server/utils";
@@ -11,10 +14,13 @@ export const llmModelGenerateWebSearchSummary = inngest.createFunction(
   { id: "web-search-and-generate-llm-summary" },
   { event: "web-search-and-generate-llm-summary" },
   async ({ event, step }) => {
+    const eventData =
+      event.data as InngestLlmModelGenerateWebSearchSummaryEventQuery;
+
     // perform web search here
     const webSearchParsedResult = await step.run("web-search", async () => {
       const { data: searchRes, err: searchErr } = await brave.searchWeb({
-        q: event.data.searchQuery,
+        q: eventData.searchQuery,
         count: 5,
       });
 
@@ -39,9 +45,9 @@ export const llmModelGenerateWebSearchSummary = inngest.createFunction(
         const convoRes = await db
           .insert(conversation)
           .values({
-            userQuery: event.data.searchQuery,
+            userQuery: eventData.searchQuery,
             webSearchResult: webSearchParsedResult,
-            libId: event.data.libId,
+            libId: eventData.libId,
           })
           .returning();
 
@@ -71,6 +77,7 @@ export const llmModelGenerateWebSearchSummary = inngest.createFunction(
       "optimize-web-search-result-for-llm",
       () => {
         const llmModifiedWebResult = webSearchParsedResult.map((result) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { img, ...rest } = result;
           return rest;
         });
@@ -82,9 +89,9 @@ export const llmModelGenerateWebSearchSummary = inngest.createFunction(
     // generate llm summary
     const summarizerAgent = createAgent({
       name: "summarizer-agent",
-      system: `You are Lunox.ai, an intelligent AI assistant. A user has asked you: "${event.data.searchQuery}"
+      system: `You are Lunox.ai, an intelligent AI assistant. A user has asked you: "${eventData.searchQuery}"
 
-You have performed a web search to gather current information about this topic. Based on your web search findings, provide a comprehensive and helpful response directly answering the user's question.
+You need to perform web search to gather current information about this topic. Based on your web search findings, provide a comprehensive and helpful response directly answering the user's question.
 
 Guidelines:
 - Respond naturally as if you're directly answering the user's question

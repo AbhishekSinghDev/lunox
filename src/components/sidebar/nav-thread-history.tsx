@@ -55,7 +55,7 @@ export function NavThreadHistory() {
                   "bg-sidebar-accent text-sidebar-accent-foreground",
               )}
             >
-              <Link href={`/thread/${item.id}`}>
+              <Link href={`/thread/${item.id}`} prefetch={true}>
                 <MessageSquare />
                 <span className="line-clamp-1">
                   {item.content.slice(0, 50)}

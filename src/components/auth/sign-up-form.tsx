@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { SignupSchema } from "@/lib/zod";
 import { authClient } from "@/server/auth/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -347,12 +348,12 @@ const SignUpForm = () => {
           <div className="mt-6 text-center">
             <p className="text-muted-foreground text-sm">
               Already have an account?{" "}
-              <a
+              <Link
                 href="/sign-in"
                 className="text-primary font-medium hover:underline"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </CardContent>

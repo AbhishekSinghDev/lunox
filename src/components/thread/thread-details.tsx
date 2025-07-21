@@ -14,12 +14,12 @@ interface ThreadDetailsProps {
 }
 
 const ThreadDetails = ({ id }: ThreadDetailsProps) => {
-  const { thread, isPending, isError } = useThread(id);
+  const { thread, isPending, isRefetching, isError } = useThread(id);
 
   return (
     <div className="relative mx-auto h-full w-full max-w-full">
       <div className="z-10 max-h-full overflow-y-auto">
-        {isPending ? (
+        {isPending || isRefetching ? (
           <ThreadSkeleton />
         ) : isError ? (
           <ThreadError />
@@ -44,7 +44,7 @@ const ThreadDetails = ({ id }: ThreadDetailsProps) => {
         <div className="h-[100px]" />
       </div>
 
-      <ThreadInputBox />
+      <ThreadInputBox threadId={id} />
     </div>
   );
 };
