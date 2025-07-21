@@ -1,11 +1,14 @@
 import { api } from "@/trpc/react";
 
 const useThread = (id: string) => {
-  const { data, isLoading, isError } = api.library.getById.useQuery(
+  const { data, isPending, isError } = api.library.getById.useQuery(
     { id },
     {
       refetchInterval(data) {
-        if (data.state.data?.id) {
+        if (
+          data?.state?.data?.conversations.at(-1)?.aiResponse &&
+          data.state.data.conversations.at(-1)?.webSearchResult?.at(-1)
+        ) {
           return false;
         }
 
@@ -16,7 +19,7 @@ const useThread = (id: string) => {
 
   return {
     thread: data,
-    isLoading,
+    isPending,
     isError,
   };
 };
