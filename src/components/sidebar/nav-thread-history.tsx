@@ -1,37 +1,21 @@
 "use client";
 
-import {
-  Copy,
-  MessageSquare,
-  MoreHorizontal,
-  Share,
-  Trash2,
-} from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThreadHistoryActions from "./thread-history-actions";
 
 export function NavThreadHistory() {
-  const { isMobile } = useSidebar();
-
   const pathname = usePathname();
 
   const [threads] = api.library.getAll.useSuspenseQuery();
@@ -62,33 +46,7 @@ export function NavThreadHistory() {
                 </span>
               </Link>
             </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-48"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
-              >
-                <DropdownMenuItem>
-                  <Copy className="text-muted-foreground" />
-                  <span>Duplicate Thread</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Share className="text-muted-foreground" />
-                  <span>Share Thread</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="group text-red-600 focus:text-white">
-                  <Trash2 className="text-red-600 group-hover:text-white" />
-                  <span>Delete Thread</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ThreadHistoryActions threadId={item.id} />
           </SidebarMenuItem>
         ))}
 

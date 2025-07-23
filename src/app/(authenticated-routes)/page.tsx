@@ -1,6 +1,8 @@
 import InputChatBox from "@/components/shared/input-chat-box";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 const page = () => {
   return (
     <main className="flex h-full flex-col items-center justify-center gap-4">
